@@ -3,6 +3,7 @@ using System.Collections;
 
 public class ThirdPersonOrbitCam : MonoBehaviour 
 {
+    public Camera playerCamera;
 	public Transform player;                                           // Player's reference.
 	public Vector3 pivotOffset = new Vector3(0.0f, 1.0f,  0.0f);       // Offset to repoint the camera.
 	public Vector3 camOffset   = new Vector3(0.0f, 0.7f, -3.0f);       // Offset to relocate the camera related to the player position.
@@ -24,11 +25,13 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	private float defaultFOV;                                          // Default camera Field of View.
 	private float targetFOV;                                           // Target camera FIeld of View.
 	private float targetMaxVerticalAngle;                              // Custom camera max vertical clamp angle. 
+    private float zoomSpeed = 35f;
 
 	void Awake()
 	{
 		// Reference to the camera transform.
 		cam = transform;
+        playerCamera = GetComponent<Camera>();
 
 		// Set camera default position.
 		cam.position = player.position + Quaternion.identity * pivotOffset + Quaternion.identity * camOffset;
@@ -41,10 +44,10 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		// Set up references and default values.
 		smoothPivotOffset = pivotOffset;
 		smoothCamOffset = camOffset;
-		defaultFOV = cam.GetComponent<Camera>().fieldOfView;
+		defaultFOV = playerCamera.fieldOfView;
 
 		ResetTargetOffsets ();
-		ResetFOV ();
+		ResetFOV ();  
 		ResetMaxVerticalAngle();
 	}
 
@@ -63,7 +66,7 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 		cam.rotation = aimRotation;
 
 		// Set FOV.
-		cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp (cam.GetComponent<Camera>().fieldOfView, targetFOV,  Time.deltaTime);
+		//cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp (cam.GetComponent<Camera>().fieldOfView, targetFOV,  Time.deltaTime);
 
 		// Test for collision with the environment based on current camera position.
 		Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
@@ -77,12 +80,22 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 			} 
 		}
 
-		// Repostition the camera.
-		smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
-		smoothCamOffset = Vector3.Lerp(smoothCamOffset, noCollisionOffset, smooth * Time.deltaTime);
+        if (Input.GetAxisRaw("Mouse ScrollWheel") != 0)
+        {
+            float scrollV = Input.GetAxis("Mouse ScrollWheel");
+            playerCamera.fieldOfView -= scrollV * zoomSpeed;
+            playerCamera.fieldOfView = Mathf.Clamp(playerCamera.fieldOfView, 15, 120);
 
-		cam.position =  player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
-	}
+        }
+
+        // Repostition the camera.
+        smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
+        smoothCamOffset = Vector3.Lerp(smoothCamOffset, noCollisionOffset, smooth * Time.deltaTime);
+
+        cam.position =  player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+
+        
+    }
 
 	// Set camera offsets to custom values.
 	public void SetTargetOffsets(Vector3 newPivotOffset, Vector3 newCamOffset)
