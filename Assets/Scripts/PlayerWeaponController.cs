@@ -16,6 +16,7 @@ public class PlayerWeaponController : MonoBehaviour {
     {
         spawnProjectile = transform.Find("ProjectileSpawn");
         characterStats = GetComponent<StatsCharacter>();
+        
     }
 
     public void EquipWeapon(Item itemToEquip)
@@ -48,8 +49,8 @@ public class PlayerWeaponController : MonoBehaviour {
         
     }
 
-    private void Update()
-    {
+    private void Update() { 
+    
         if(Input.GetKeyDown(KeyCode.X))
         {
             PerformWeaponAttack();
