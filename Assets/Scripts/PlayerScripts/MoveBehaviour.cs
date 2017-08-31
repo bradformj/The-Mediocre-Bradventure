@@ -33,7 +33,7 @@ public class MoveBehaviour : GenericBehaviour
 	void Update ()
 	{
 		// Activate run by input.
-		run = Input.GetButton ("Run");
+		//run = Input.GetButton ("Run");
 		if(Input.GetButtonDown ("Jump"))
 			jump = true;
 	}
@@ -88,14 +88,14 @@ public class MoveBehaviour : GenericBehaviour
 			{
 				speed = sprintSpeed;
 			}
-			else if (running)
+			else //if (running)
 			{
 				speed = runSpeed;
 			}
-			else
-			{
-				speed = walkSpeed;
-			}
+			//else
+			//{
+			//	speed = walkSpeed;
+			//}
 		}
 		else
 		{

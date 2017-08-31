@@ -26,16 +26,17 @@ public class AimBehaviour : GenericBehaviour
 	void Update ()
 	{
 		// Activate aim by input.
-		aim = Input.GetButton("Aim");
+		//aim = Input.GetButton("Aim");
 
 		// Player is aiming.
-		if (aim)
-		{
+		//if (aim)
+		//{
 			// Register this behaviour.
-			behaviourManager.RegisterBehaviour (this.behaviourCode);
-		}
+		//	behaviourManager.RegisterBehaviour (this.behaviourCode);
+		//}
 		// Player just stopped aiming.
-		else if(behaviourManager.IsCurrentBehaviour(this.behaviourCode))
+		//else 
+        if (behaviourManager.IsCurrentBehaviour(this.behaviourCode))
 		{
 			// Ensure the camera will be back to original setup when is not aiming.
 			camScript.ResetTargetOffsets ();
@@ -45,16 +46,16 @@ public class AimBehaviour : GenericBehaviour
 			behaviourManager.UnregisterBehaviour (this.behaviourCode);
 		}
 
-		canSprint = !aim;
+		//canSprint = !aim;
 
 		// Toggle camera aim position left or right.
-		if (aim && Input.GetButtonDown ("Fire3"))
-		{
-			aimCamOffset.x = aimCamOffset.x * (-1);
-		}
+		//if (aim && Input.GetButtonDown ("Fire3"))
+		//{
+		//	aimCamOffset.x = aimCamOffset.x * (-1);
+		//}
 
 		// Set aim boolean on the Animator Controller.
-		anim.SetBool (aimBool, aim);
+		//anim.SetBool (aimBool, aim);
 	}
 
 	// LocalFixedUpdate overrides the virtual function of the base class.
