@@ -8,6 +8,13 @@ public class Interactable : MonoBehaviour {
     public UnityEngine.AI.NavMeshAgent playerAgent;
     private bool hasInteracted;
     bool isEnemy;
+    public float radius = 3f;
+
+    public void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, radius);
+    }
 
     public virtual void MoveToInteraction(NavMeshAgent playerAgent)
     {
@@ -16,24 +23,6 @@ public class Interactable : MonoBehaviour {
         this.playerAgent = playerAgent;
         playerAgent.stoppingDistance = 2f;
         playerAgent.destination = transform.position;
-    }
-
-    void Update()  //this is buggy.  It still interacts if you interupt the movement to the item.
-    {
-
-        if (!hasInteracted && playerAgent != null && !playerAgent.pathPending) //&& playerAgent.stoppingDistance != 0)
-        {
-
-            if (playerAgent.remainingDistance <= playerAgent.stoppingDistance)
-            {
-                if (!isEnemy)
-                    Interact();
-
-                EnsureLookDirection();
-                hasInteracted = true;
-            }
-        }
-
     }
 
     public virtual void Interact()
