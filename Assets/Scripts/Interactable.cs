@@ -18,11 +18,11 @@ public class Interactable : MonoBehaviour {
 
     public virtual void MoveToInteraction(NavMeshAgent playerAgent)
     {
-        isEnemy = gameObject.tag == "Enemy";
-        hasInteracted = false;
-        this.playerAgent = playerAgent;
-        playerAgent.stoppingDistance = 2f;
-        playerAgent.destination = transform.position;
+        //isEnemy = gameObject.tag == "Enemy";
+        //hasInteracted = false;
+        //this.playerAgent = playerAgent;
+        //playerAgent.stoppingDistance = 2f;
+        //playerAgent.destination = transform.position;
     }
 
     public virtual void Interact()
