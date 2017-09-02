@@ -6,34 +6,26 @@ using UnityEngine.AI;
 public class Interactable : MonoBehaviour {
     [HideInInspector]
     public UnityEngine.AI.NavMeshAgent playerAgent;
-    private bool hasInteracted = false;
     public float radius = 3f;
-    bool isFocus = false;
-    public Renderer rend;
-
-    private void Start()
-    {
-        rend = GetComponent<Renderer>();
-    }
+    public Transform interactionTransform;
 
     public void OnDrawGizmosSelected()
     {
+        if (interactionTransform == null)
+            interactionTransform = transform;
+        
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, radius);
     }
 
     public void OnFocused()
     {
-        isFocus = true;
         FocusIndicate();
-        hasInteracted = false;
     }
 
     public void OnDefocused()
     {
-        isFocus = false;
         UnfocusIndicate();
-        hasInteracted = false;
     }
 
     public virtual void FocusIndicate()
@@ -49,7 +41,6 @@ public class Interactable : MonoBehaviour {
     public virtual void Interact()
     {
         Debug.Log("Interacting with base class.");
-        hasInteracted = true;
     }
 
     void EnsureLookDirection()

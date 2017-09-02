@@ -9,14 +9,14 @@ public class AimBehaviour : GenericBehaviour
 	public Vector3 aimPivotOffset = new Vector3(0.0f, 1.7f,  -0.3f);      // Offset to repoint the camera when aiming.
 	public Vector3 aimCamOffset   = new Vector3(0.8f, 0.0f, -1.0f);       // Offset to relocate the camera when aiming.
 
-	private int aimBool;                                                  // Animator variable related to aiming.
+	//private int aimBool;                                                  // Animator variable related to aiming.
 	private bool aim;                                                     // Boolean to determine whether or not the player is aiming.
 
 	// Start is always called after any Awake functions.
 	void Start ()
 	{
 		// Set up the references.
-		aimBool = Animator.StringToHash("Aim");
+		//aimBool = Animator.StringToHash("Aim");
 
 		// Subscribe this behaviour on the manager.
 		behaviourManager.SubscribeBehaviour (this);
