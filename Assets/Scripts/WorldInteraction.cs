@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class WorldInteraction : MonoBehaviour {
     UnityEngine.AI.NavMeshAgent playerAgent;
 
-    GameObject focusItem;
+    public Interactable focusItem;
     
 	
 	void Start () {
@@ -20,24 +20,29 @@ public class WorldInteraction : MonoBehaviour {
     {
         if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
-            //Check if we hit an interractable
-            //if we did set that item as our focus.
-
-            focusItem = GetFocus();
+            
+            GetFocus();
 
         }
 
         if (Input.GetMouseButtonDown(1) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject()){
-            //Check to see if we hit an interractable
-            //if we did, set that item as our focus and interact
+ 
+            GetFocus();
+            if(focusItem != null)
+                GetInteraction(focusItem); //fix focus removal in every focus action
 
-            focusItem = GetFocus();
-            GetInteraction(focusItem);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+
+            RemoveFocus();
+
         }
 
     }
 
-    void GetInteraction(GameObject focusObject)
+    void GetInteraction(Interactable focusObject)
     {
         if (focusObject != null)
         {
@@ -49,33 +54,41 @@ public class WorldInteraction : MonoBehaviour {
         }
     }
 
-    GameObject GetFocus()
+    void GetFocus()
     {
+        if (focusItem != null)
+            RemoveFocus();
+
         Ray interactionRay = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit interactionInfo;
 
         if (Physics.Raycast(interactionRay, out interactionInfo, Mathf.Infinity))
         {
             playerAgent.updateRotation = true;
-            GameObject focusObject = interactionInfo.collider.gameObject;
-            if (focusObject.tag == "Enemy")
+            Interactable focusObject = interactionInfo.collider.GetComponent<Interactable>();
+
+            if (focusObject != null)
             {
-                Debug.Log("Enemy " + focusObject.name + " focused");
-                return focusObject;
-            }
-            else if (focusObject.tag == "Interactable Object")
-            {
-                Debug.Log("Item " + focusObject.name + " focused");
-                return focusObject;
-            }
-            else
-            {
-                Debug.Log("Item focused was neither enemy nor interactabl.");
-                return focusObject;
+                if (focusObject.tag == "Enemy")
+                {
+                    Debug.Log("Enemy " + focusObject.name + " focused");
+                    focusItem = focusObject;
+                }
+                else if (focusObject.tag == "Interactable Object")
+                {
+                    Debug.Log("Item " + focusObject.name + " focused");
+                    focusItem = focusObject;
+                }
+            
             }
         }
         else
-            return null;
+            focusItem = null;
 
+    }
+
+    void RemoveFocus()
+    {
+        focusItem = null;
     }
 }
