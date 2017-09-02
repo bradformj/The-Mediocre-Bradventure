@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+//Apply this script to the player object.  It controls the interactions with the interactable objects in
+//the world.  It uses left mouse button to focus an item, right mouse button to interact with the interactable, if focused,
+//or focus it and then interact with the interactable, escape to clear the focus.
+
 public class WorldInteraction : MonoBehaviour {
+
     UnityEngine.AI.NavMeshAgent playerAgent;
 
     public Interactable focusItem;
@@ -89,7 +94,7 @@ public class WorldInteraction : MonoBehaviour {
             }
             focusItem = newFocus;
         }
-        focusItem.OnFocused(transform);
+        focusItem.OnFocused();
     }
 
     void RemoveFocus()

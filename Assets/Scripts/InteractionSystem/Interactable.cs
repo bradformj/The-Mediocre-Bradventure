@@ -9,7 +9,12 @@ public class Interactable : MonoBehaviour {
     private bool hasInteracted = false;
     public float radius = 3f;
     bool isFocus = false;
-    public Transform player;
+    public Renderer rend;
+
+    private void Start()
+    {
+        rend = GetComponent<Renderer>();
+    }
 
     public void OnDrawGizmosSelected()
     {
@@ -17,10 +22,9 @@ public class Interactable : MonoBehaviour {
         Gizmos.DrawWireSphere(transform.position, radius);
     }
 
-    public void OnFocused( Transform playerTransform)
+    public void OnFocused()
     {
         isFocus = true;
-        player = playerTransform;
         FocusIndicate();
         hasInteracted = false;
     }
@@ -28,14 +32,13 @@ public class Interactable : MonoBehaviour {
     public void OnDefocused()
     {
         isFocus = false;
-        player = null;
         UnfocusIndicate();
         hasInteracted = false;
     }
 
     public virtual void FocusIndicate()
     {
-        //create some indicator of being focused, like a green or red circle under the interactable.
+         //create some indicator of being focused, like a green or red circle under the interactable.
     }
 
     public virtual void UnfocusIndicate()
