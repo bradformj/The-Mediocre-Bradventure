@@ -8,8 +8,8 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	public Vector3 pivotOffset = new Vector3(0.0f, 1.0f,  0.0f);       // Offset to repoint the camera.
 	public Vector3 camOffset   = new Vector3(0.0f, 0.7f, -3.0f);       // Offset to relocate the camera related to the player position.
 	public float smooth = 10f;                                         // Speed of camera responsiveness.
-	public float horizontalAimingSpeed = 400f;                         // Horizontal turn speed.
-	public float verticalAimingSpeed = 400f;                           // Vertical turn speed.
+	public float horizontalAimingSpeed = 500f;                         // Horizontal turn speed.
+	public float verticalAimingSpeed = 500f;                           // Vertical turn speed.
 	public float maxVerticalAngle = 30f;                               // Camera max clamp angle. 
 	public float minVerticalAngle = -60f;                              // Camera min clamp angle.
 
@@ -25,8 +25,9 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	private float defaultFOV;                                          // Default camera Field of View.
 	private float targetFOV;                                           // Target camera FIeld of View.
 	private float targetMaxVerticalAngle;                              // Custom camera max vertical clamp angle. 
-    private float zoomSpeed = 35f;
-
+    public float zoomSpeed = 5f;                                       // zoom speed for the camera
+    public float cameraDistance = 5f;
+   
 	void Awake()
 	{
 		// Reference to the camera transform.
@@ -53,25 +54,52 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 
 	void LateUpdate()
 	{
-		// Get mouse movement to orbit the camera.
-		angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
-		angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
+        // Get mouse movement to orbit the camera.
+        if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
+            angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
+        }
+        else
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
 
 		// Set vertical movement limit.
 		angleV = Mathf.Clamp(angleV, minVerticalAngle, targetMaxVerticalAngle);
 
-		// Set camera orientation..
+		// Set camera orientation.
 		Quaternion camYRotation = Quaternion.Euler(0, angleH, 0);
 		Quaternion aimRotation = Quaternion.Euler(-angleV, angleH, 0);
 		cam.rotation = aimRotation;
 
-		// Set FOV.
-		//cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp (cam.GetComponent<Camera>().fieldOfView, targetFOV,  Time.deltaTime);
+		// Set FOV... except I don't like having the getcomponent in the update function... maybe some improvement here.
+		cam.GetComponent<Camera>().fieldOfView = Mathf.Lerp (cam.GetComponent<Camera>().fieldOfView, targetFOV,  Time.deltaTime);
 
-		// Test for collision with the environment based on current camera position.
-		Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
+        // Set Zoom Level
+        if (Input.GetAxisRaw("Mouse ScrollWheel") != 0)
+        {
+            float scrollV = Input.GetAxis("Mouse ScrollWheel");
+            cameraDistance = Mathf.Clamp(cameraDistance - (scrollV * zoomSpeed), 1.5f, 15f);
+        }
+
+        targetCamOffset = (targetCamOffset / targetCamOffset.magnitude) * cameraDistance;
+
+        // Update the relative camera position, since we move it with zoom.
+        relCameraPos = transform.position - player.position;
+        relCameraPosMag = relCameraPos.magnitude - 0.5f;
+
+        // Test for collision with the environment based on current camera position.  Occlusion test currently does not work.  Needs a rewrite
+        // Probably just raycast from player to camera and reverse (due to how meshes work).  If the rays hit something other than the player or nothing.
+        // then get the distance from the player to the raycast collision and set the tempdistance to that and have an if statement that sets the
+        // targetCamOffset to that value until the collision is no longer present.
+
+        Vector3 baseTempPosition = player.position + camYRotation * targetPivotOffset;
 		Vector3 noCollisionOffset = targetCamOffset;
-		for(float zOffset = targetCamOffset.z; zOffset <= 0; zOffset += 0.5f)
+		for(float zOffset = targetCamOffset.z; zOffset <= 0; zOffset += 0.2f)
 		{
 			noCollisionOffset.z = zOffset;
 			if (DoubleViewingPosCheck (baseTempPosition + aimRotation * noCollisionOffset, Mathf.Abs(zOffset)) || zOffset == 0) 
@@ -80,21 +108,12 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 			} 
 		}
 
-        if (Input.GetAxisRaw("Mouse ScrollWheel") != 0)
-        {
-            float scrollV = Input.GetAxis("Mouse ScrollWheel");
-            playerCamera.fieldOfView -= scrollV * zoomSpeed;
-            playerCamera.fieldOfView = Mathf.Clamp(playerCamera.fieldOfView, 15, 120);
-
-        }
-
         // Repostition the camera.
         smoothPivotOffset = Vector3.Lerp(smoothPivotOffset, targetPivotOffset, smooth * Time.deltaTime);
-        smoothCamOffset = Vector3.Lerp(smoothCamOffset, noCollisionOffset, smooth * Time.deltaTime);
+        smoothCamOffset = Vector3.Lerp(smoothCamOffset, targetCamOffset, smooth * Time.deltaTime);
 
-        cam.position =  player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
+        cam.position = player.position + camYRotation * smoothPivotOffset + aimRotation * smoothCamOffset;
 
-        
     }
 
 	// Set camera offsets to custom values.

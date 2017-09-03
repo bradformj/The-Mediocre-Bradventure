@@ -48,7 +48,7 @@ public class BasicBehaviour : MonoBehaviour
 		anim.SetFloat(hFloat, h);
 		anim.SetFloat(vFloat, v);
 
-		// Toggle sprint by input.
+		// Toggle sprint by input. This may be removed so that shift can be used for the combat system toggles
 		sprint = Input.GetButton ("Sprint");
 
 		// Set the correct camera FOV.
@@ -64,9 +64,6 @@ public class BasicBehaviour : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		// Ensure the camera will be back to original setup when no behaivour is active.
-//		camScript.ResetTargetOffsets ();
-//		camScript.ResetMaxVerticalAngle ();
 
 		// Call the active behaviour.
 		bool isAnyBehaviourActive = false;
@@ -182,7 +179,7 @@ public abstract class GenericBehaviour : MonoBehaviour
 	protected ThirdPersonOrbitCam camScript;       // Reference to the third person camera script.
 	protected int behaviourCode;                   // The code that identifies a behaviour.
 	protected bool canSprint;                      // Boolean to store if the behaviour allows the player to sprint.
-	protected float distToGround;                   // Actual distance to ground.
+	protected float distToGround;                  // Actual distance to ground.
 
 	void Awake()
 	{

@@ -9,12 +9,15 @@ public class MoveBehaviour : GenericBehaviour
 	public float sprintSpeed = 2.0f;                // Default sprint speed.
 	public float speedDampTime = 0.1f;              // Default damp time to change the animations based on current speed.
 	public float jumpHeight = 1.0f;                 // Default jump height.
+    public Vector3 currentPosition;
+    public Vector3 jumpVector = new Vector3 (0f, 1f, 0f);
 
 	private float speed;                            // Moving speed.
 	private int jumpBool;                           // Animator variable related to jumping.
 	private int groundedBool;                       // Animator variable related to whether or not the player is on ground.
-	private bool run;                               // Boolean to determine whether or not the player activated the run mode.
+	private bool run = false;                       // Boolean to determine whether or not the player activated the run mode.
 	private bool jump;                              // Boolean to determine whether or not the player started a jump.
+    public float altitude;                          // Used to debug the jump functionality.
 
 	// Start is always called after any Awake functions.
 	void Start() 
@@ -27,6 +30,7 @@ public class MoveBehaviour : GenericBehaviour
 		// Subscribe and register this behaviour as the default behaviour.
 		behaviourManager.SubscribeBehaviour (this);
 		behaviourManager.RegisterDefaultBehaviour (this.behaviourCode);
+
 	}
 
 	// Update is used to set features regardless the active behaviour.
@@ -36,6 +40,8 @@ public class MoveBehaviour : GenericBehaviour
 		//run = Input.GetButton ("Run");
 		if(Input.GetButtonDown ("Jump"))
 			jump = true;
+
+        altitude = transform.position.y;
 	}
 
 	// LocalFixedUpdate overrides the virtual function of the base class.
@@ -54,6 +60,7 @@ public class MoveBehaviour : GenericBehaviour
 		// Already jumped, landing.
 		if (anim.GetBool(jumpBool) && rbody.velocity.y < 0)
 		{
+            //Debug.Log("Entered already jumped if statement.");
 			// Set jump boolean on the Animator controller.
 			jump = false;
 			anim.SetBool (jumpBool, false);
@@ -61,12 +68,17 @@ public class MoveBehaviour : GenericBehaviour
 		// Start jump.
 		if (jump && !anim.GetBool(jumpBool) && IsGrounded())
 		{
+            //Debug.Log("Entered Start Jump Statement");
+
 			// Set jump boolean on the Animator controller.
 			anim.SetBool(jumpBool, true);
 			if(speed > 0)
 			{
-				// Set jump vertical impulse when moving.
-				rbody.AddForce (Vector3.up * jumpHeight * rbody.mass * 10, ForceMode.Impulse);
+                //Debug.Log("Entered the jump impulse if statement.");
+                //Set jump vertical impulse when moving.
+                rbody.AddForce (Vector3.up * jumpHeight * rbody.mass * 10, ForceMode.Impulse);
+                //Debug.Log("Jump impulse initiated.");
+
 			}
 		}
 	}
