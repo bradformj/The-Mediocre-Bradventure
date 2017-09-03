@@ -2,40 +2,46 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class InventoryUI : MonoBehaviour {
 
-    public RectTransform inventoryPanel;
-    public RectTransform scrollViewContent;
-    InventoryUIItem ItemContainer { get; set; }
-    bool MenuIsActive { get; set; }
-    Item CurrentSelectedItem { get; set; }
+    public Transform itemsParent;
+    public GameObject inventoryUI;
+
+    Inventory inventory;
+
+    InventorySlot[] slots;
 
 
-    void Start()
-    {
-        ItemContainer = Resources.Load<InventoryUIItem>("UI/Item_Container");
-        UIEventHandler.OnItemAddedToInventory += ItemAdded;
-        inventoryPanel.gameObject.SetActive(false);
+	void Start () {
+        inventory = Inventory.instance;
+        inventory.onItemChangedCallback += UpdateUI;
 
-
-    }
+        slots = itemsParent.GetComponentsInChildren<InventorySlot>();
+        inventoryUI.SetActive(false);
+	}
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetButtonDown("Inventory"))
         {
-            MenuIsActive = !MenuIsActive;
-            inventoryPanel.gameObject.SetActive(MenuIsActive);
-
+            inventoryUI.SetActive(!inventoryUI.activeSelf);
         }
     }
 
-    public void ItemAdded(Item item)
+    void UpdateUI()
     {
-        InventoryUIItem emptyItem = Instantiate(ItemContainer);
-        emptyItem.SetItem(item);
-        emptyItem.transform.SetParent(scrollViewContent);
-    }
+        Debug.Log("Updating UI.");
 
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (i < inventory.items.Count)
+            {
+                slots[i].AddItem(inventory.items[i]);
+            }
+            else
+            {
+                slots[i].ClearSlot();
+            }
+        }
+    }
 }
