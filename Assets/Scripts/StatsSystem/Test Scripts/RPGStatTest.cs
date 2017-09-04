@@ -18,6 +18,14 @@ public class RPGStatTest : MonoBehaviour {
 
         health.UpdateModifiers();
 
+        var stamina = stats.GetStat<RPGStat>(RPGStatType.Stamina);
+        IStatScalable statScalable = stamina as IStatScalable;
+        if(statScalable != null)
+        {
+            statScalable.ScaleStat(16);
+        }
+        //stamina.ScaleStat(16);
+
         DisplayStatValues();
 	}
 

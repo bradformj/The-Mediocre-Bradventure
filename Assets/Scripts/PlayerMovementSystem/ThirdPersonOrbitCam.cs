@@ -55,17 +55,17 @@ public class ThirdPersonOrbitCam : MonoBehaviour
 	void LateUpdate()
 	{
         // Get mouse movement to orbit the camera.
-        if (Input.GetMouseButton(0) || Input.GetMouseButton(1))
+        if ((Input.GetMouseButton(0) || Input.GetMouseButton(1))  )
         {
+            
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
             angleH += Mathf.Clamp(Input.GetAxis("Mouse X"), -1, 1) * horizontalAimingSpeed * Time.deltaTime;
             angleV += Mathf.Clamp(Input.GetAxis("Mouse Y"), -1, 1) * verticalAimingSpeed * Time.deltaTime;
         }
         else
         {
             Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+            
         }
 
 		// Set vertical movement limit.

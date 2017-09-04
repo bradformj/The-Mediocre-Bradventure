@@ -15,7 +15,7 @@ public class RPGStat  {
 
     public virtual int StatValue
     {
-        get { return _statBaseValue;  }
+        get { return StatBaseValue;  }
     }
 
     public virtual int StatBaseValue

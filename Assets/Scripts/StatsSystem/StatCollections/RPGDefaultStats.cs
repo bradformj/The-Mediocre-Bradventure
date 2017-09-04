@@ -13,5 +13,13 @@ public class RPGDefaultStats : RPGStatCollection {
         var mana = CreateOrGetStat<RPGStat>(RPGStatType.Mana);
         mana.StatName = "Health";
         mana.StatBaseValue = 2000;
+
+        var stamina = CreateOrGetStat<RPGAttribute>(RPGStatType.Stamina);
+        stamina.StatName = "Stamina";
+        stamina.StatBaseValue = 10;
+
+        var wisdom = CreateOrGetStat<RPGAttribute>(RPGStatType.Wisdom);
+        wisdom.StatName = "Wisdom";
+        wisdom.StatBaseValue = 5;
     }
 }

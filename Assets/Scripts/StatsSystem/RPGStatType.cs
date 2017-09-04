@@ -7,4 +7,6 @@ public enum RPGStatType {
     Health = 1,
     Mana = 2,
     
+    Stamina = 10,
+    Wisdom = 11,
 }
