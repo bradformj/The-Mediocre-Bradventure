@@ -18,11 +18,12 @@ public class RPGDefaultStats : RPGStatCollection {
         health.StatName = "Health";
         health.StatBaseValue = 100;
         health.AddLinker(new RPGStatLinkerBasic(CreateOrGetStat<RPGAttribute>(RPGStatType.Stamina), 13f));
+        health.UpdateLinkers();
 
         var mana = CreateOrGetStat<RPGAttribute>(RPGStatType.Mana);
         mana.StatName = "Mana";
         mana.StatBaseValue = 2000;
         mana.AddLinker(new RPGStatLinkerBasic(CreateOrGetStat<RPGAttribute>(RPGStatType.Wisdom), 68f));
-
+        mana.UpdateLinkers();
     }
 }
