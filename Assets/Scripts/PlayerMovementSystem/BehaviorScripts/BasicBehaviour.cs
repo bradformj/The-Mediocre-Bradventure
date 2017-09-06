@@ -44,6 +44,12 @@ public class BasicBehaviour : MonoBehaviour
 		h = Input.GetAxis("Horizontal");
 		v = Input.GetAxis("Vertical");
 
+        //add the following
+        //if (rightclick)
+            // align player with the camera
+            //if (leftclick)
+                // move forward
+
 		// Set the input axes on the Animator Controller.
 		anim.SetFloat(hFloat, h);
 		anim.SetFloat(vFloat, v);
