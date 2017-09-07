@@ -1,14 +1,21 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class RPGStatLinker {
+public abstract class RPGStatLinker : IStatValueChange {
 
     private RPGStat _stat;
     
     public RPGStatLinker(RPGStat stat)
     {
         _stat = stat;
+
+        IStatValueChange iValueChange = _stat as IStatValueChange;
+        if(iValueChange != null)
+        {
+            iValueChange.OnValueChange += OnLinkedStatValueChange;
+        }
     }
 
     public RPGStat Stat
@@ -17,5 +24,15 @@ public abstract class RPGStatLinker {
     }
 
     public abstract int Value { get; }
+
+    public event EventHandler OnValueChange;
+
+    private void OnLinkedStatValueChange(object stat, EventArgs args)
+    {
+        if (OnValueChange != null)
+        {
+            OnValueChange(this, null);
+        }
+    }
 
 }

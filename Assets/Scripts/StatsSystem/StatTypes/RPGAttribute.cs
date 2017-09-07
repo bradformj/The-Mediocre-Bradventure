@@ -27,7 +27,6 @@ public class RPGAttribute : RPGStatModifiable, IStatScalable, IStatLinkable
     {
         get
         {
-            UpdateLinkers();
             return _statLinkerValue;
         }
     }
@@ -35,16 +34,22 @@ public class RPGAttribute : RPGStatModifiable, IStatScalable, IStatLinkable
     public void AddLinker(RPGStatLinker linker)
     {
         _statLinkers.Add(linker);
+        linker.OnValueChange += OnLinkerValueChange;
     }
 
     public void ClearLinkers()
     {
+        foreach(var linker in _statLinkers)
+        {
+            linker.OnValueChange -= OnLinkerValueChange;
+        }
         _statLinkers.Clear();
     }
 
     public virtual void ScaleStat(int level)
     {
         _statLevelCoefficient = level; //this will be some basic calculation that upgrades items based on level (or tier, maybe??? or both????)
+        TriggerValueChange();
     }
 
     public void UpdateLinkers()
@@ -55,10 +60,16 @@ public class RPGAttribute : RPGStatModifiable, IStatScalable, IStatLinkable
         {
             _statLinkerValue += link.Value;
         }
+        TriggerValueChange();
     }
 
     public RPGAttribute()
     {
         _statLinkers = new List<RPGStatLinker>();
+    }
+
+    private void OnLinkerValueChange(object linker, EventArgs args)
+    {
+        UpdateLinkers();
     }
 }

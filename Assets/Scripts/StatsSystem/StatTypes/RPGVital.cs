@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class RPGVital : RPGAttribute {
+public class RPGVital : RPGAttribute, IStatCurrentValueChange {
 
     private int _statCurrentValue;
 

@@ -13,7 +13,7 @@ public class Item : ScriptableObject {
         //Use the item
         //something might happen
 
-        Debug.Log("Using " + name);
+        //Debug.Log("Using " + name);
     }
 
     public void RemoveFromInventory()

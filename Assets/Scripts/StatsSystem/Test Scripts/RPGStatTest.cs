@@ -11,12 +11,13 @@ public class RPGStatTest : MonoBehaviour {
 
         DisplayStatValues();
 
-        //var health = stats.GetStat<RPGStatModifiable>(RPGStatType.Health);
-        //health.AddModifier(new RPGStatModifier(RPGStatType.Health, RPGStatModifier.Types.BaseValueAdd, 50f));
-        //health.AddModifier(new RPGStatModifier(RPGStatType.Health, RPGStatModifier.Types.BaseValuePercent, 1.0f));
-        //health.AddModifier(new RPGStatModifier(RPGStatType.Health, RPGStatModifier.Types.TotalValuePercent, 1.0f));
+        var health = stats.GetStat<RPGStatModifiable>(RPGStatType.Health);
 
-        //health.UpdateModifiers();
+        health.AddModifier(new RPGStatModBasePercent(1.0f, false));
+        health.AddModifier(new RPGStatModBaseAdd(50f, false));
+        health.AddModifier(new RPGStatModTotalPercent(1.0f, false));
+
+        health.UpdateModifiers();
 
         stats.GetStat<RPGAttribute>(RPGStatType.Stamina).ScaleStat(5);
         stats.GetStat<RPGAttribute>(RPGStatType.Wisdom).ScaleStat(10);
