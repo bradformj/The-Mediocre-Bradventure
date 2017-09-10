@@ -6,10 +6,15 @@ using System;
 public class RPGVitalTest : MonoBehaviour {
 
     private RPGStatCollection stats;
+    public GameObject enemy;
+    public GameObject MrSpanky;
+    public Vector3 enemyPosition = new Vector3(0,0,30f);
 
     void Start()
     {
-        stats = new RPGDefaultStats();
+        enemy = Instantiate(MrSpanky, enemyPosition, Quaternion.identity);
+
+        stats = enemy.GetComponent<RPGNPCStats>();
 
         var health = stats.GetStat<RPGVital>(RPGStatType.Health);
         health.OnCurrentValueChange += OnStatValueChange;

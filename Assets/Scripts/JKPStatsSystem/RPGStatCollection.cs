@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RPGStatCollection {
+public class RPGStatCollection : MonoBehaviour {
 
     private Dictionary<RPGStatType, RPGStat> _statDict;
 
