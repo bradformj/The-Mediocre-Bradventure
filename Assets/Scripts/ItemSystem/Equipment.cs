@@ -9,6 +9,8 @@ public class Equipment : Item {
     public int damageModifier;
 
     public EquipmentSlot equipSlot;
+    public SkinnedMeshRenderer sMesh;
+    public MeshRenderer mesh;
 
     public override void Use()
     {

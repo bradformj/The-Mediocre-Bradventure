@@ -18,6 +18,12 @@ public class EquipmentManager : MonoBehaviour {
     public OnEquipmentChanged onEquipmentChanged;
 
     public Equipment[] currentEquipment;
+    public SkinnedMeshRenderer[] currentSMeshes;
+    public MeshRenderer[] currentMeshes;
+
+    public SkinnedMeshRenderer targetSMesh;
+    public SkinnedMeshRenderer targetLHMesh;
+    public SkinnedMeshRenderer targetRHMesh;
 
     Inventory inventory;
 
@@ -27,6 +33,10 @@ public class EquipmentManager : MonoBehaviour {
 
         int numSlots = System.Enum.GetNames(typeof(EquipmentSlot)).Length;
         currentEquipment = new Equipment[numSlots];
+
+        currentSMeshes = new SkinnedMeshRenderer[numSlots];
+        currentMeshes = new MeshRenderer[numSlots];
+
     }
 
     void Update()
@@ -51,14 +61,72 @@ public class EquipmentManager : MonoBehaviour {
         {
             onEquipmentChanged.Invoke(newItem, oldItem);
         }
-
         currentEquipment[slotIndex] = newItem;
+
+        if(newItem.sMesh != null)
+        {
+            SkinnedMeshRenderer newSMesh = Instantiate<SkinnedMeshRenderer>(newItem.sMesh);
+            newSMesh.transform.parent = targetSMesh.transform;
+
+            newSMesh.bones = targetSMesh.bones;
+            newSMesh.rootBone = targetSMesh.rootBone;
+            currentSMeshes[slotIndex] = newSMesh;
+        }
+
+
+        if (newItem.mesh != null)
+        {
+            if (slotIndex == 5)
+            {
+                MeshRenderer newMesh = Instantiate<MeshRenderer>(newItem.mesh);
+                newMesh.transform.parent = targetRHMesh.transform;
+                newMesh.transform.position = targetRHMesh.transform.position;
+                newMesh.transform.localRotation = targetLHMesh.transform.localRotation;
+
+                Vector3 rot = newMesh.transform.localEulerAngles;
+                rot.x = -newMesh.transform.localEulerAngles.z;
+                Quaternion newOrientation = Quaternion.Euler(rot);
+
+                newMesh.transform.localRotation = newOrientation;
+
+                currentMeshes[slotIndex] = newMesh;
+
+            }
+
+
+            if (slotIndex == 6)
+            {
+                MeshRenderer newMesh = Instantiate<MeshRenderer>(newItem.mesh);
+                newMesh.transform.parent = targetLHMesh.transform;
+                newMesh.transform.position = targetLHMesh.transform.position;
+                newMesh.transform.localRotation = targetLHMesh.transform.localRotation;
+
+                Vector3 rot = newMesh.transform.localEulerAngles;
+                rot.x = -newMesh.transform.localEulerAngles.z;
+                Quaternion newOrientation = Quaternion.Euler(rot);
+
+                newMesh.transform.localRotation = newOrientation;
+
+                currentMeshes[slotIndex] = newMesh;
+            }
+        }
     }
 
     public void Unequip (int slotIndex)
     {
         if (currentEquipment[slotIndex] != null)
         {
+            
+            if(currentMeshes[slotIndex] != null)
+            {
+                Destroy(currentMeshes[slotIndex].gameObject);
+            }
+
+            if (currentSMeshes[slotIndex] != null)
+            {
+                Destroy(currentSMeshes[slotIndex].gameObject);
+            }
+
             Equipment oldItem = currentEquipment[slotIndex];
             inventory.Add(oldItem);
 
