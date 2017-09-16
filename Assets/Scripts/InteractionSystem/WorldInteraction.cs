@@ -12,11 +12,14 @@ public class WorldInteraction : MonoBehaviour {
     UnityEngine.AI.NavMeshAgent playerAgent;
 
     public Interactable focusItem;
+    public List<GameObject> targetables;
     
 	void Start () {
 
         playerAgent = GetComponent<NavMeshAgent>();
         focusItem = null;
+
+        targetables = new List<GameObject>();
 	}
 	
 	void Update ()
@@ -107,5 +110,20 @@ public class WorldInteraction : MonoBehaviour {
             focusItem.OnDefocused();
 
         focusItem = null; 
+    }
+
+    //this stuff may need to be in its own script on the child "targetting range" object in case I need more triggers or something
+    //Also, I feel like there must be a better way to do this without the getcomponent call.  How often is this checked and ran?
+    //Needs controls for looking forward, should probably be some sort of cone, if possible:  Model a cone turn it into a mesh Collider.
+    private void OnTriggerEnter(Collider coll)
+    {
+        if (coll.gameObject.GetComponent<NPC>() != null | coll.gameObject.GetComponent<Enemy>() != null)
+            targetables.Add(coll.gameObject);
+    }
+
+    private void OnTriggerExit(Collider coll)
+    {
+        if (targetables.Contains(coll.gameObject))
+            targetables.Remove(coll.gameObject);
     }
 }
