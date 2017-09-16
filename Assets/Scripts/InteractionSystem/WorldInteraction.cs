@@ -23,10 +23,11 @@ public class WorldInteraction : MonoBehaviour {
     {
         if (Input.GetMouseButtonDown(0) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
+            LayerMask layerMask = ~(1 << 8);
             Ray interactionRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit interactionInfo;
 
-            if (Physics.Raycast(interactionRay, out interactionInfo, Mathf.Infinity))
+            if (Physics.Raycast(interactionRay, out interactionInfo, Mathf.Infinity, layerMask))
             {
                 playerAgent.updateRotation = true;
                 Interactable interactable = interactionInfo.collider.GetComponent<Interactable>();
@@ -39,14 +40,17 @@ public class WorldInteraction : MonoBehaviour {
                     RemoveFocus();
                 }
             }
+            
         }
 
+        
         if (Input.GetMouseButtonDown(1) && !UnityEngine.EventSystems.EventSystem.current.IsPointerOverGameObject())
         {
+            LayerMask layerMask = ~(1 << 8 | 1 << 9);
             Ray interactionRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit interactionInfo;
 
-            if (Physics.Raycast(interactionRay, out interactionInfo, Mathf.Infinity))
+            if (Physics.Raycast(interactionRay, out interactionInfo, Mathf.Infinity, layerMask))
             {
                 playerAgent.updateRotation = true;
                 Interactable interactable = interactionInfo.collider.GetComponent<Interactable>();
